@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +26,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}', name: 'user', methods: ['GET'])]
-    public function getSingleProduct(User $user, SerializerInterface $serializer): JsonResponse
+    public function getSingleUser(User $user, SerializerInterface $serializer): JsonResponse
     {
         if ($user->getClient() == $this->getUser()) {
             $jsonUser = $serializer->serialize($user, 'json');
@@ -34,4 +35,14 @@ class UserController extends AbstractController
 
         throw new ErrorException("Vous ne pouvez pas accéder à cet utilisateur");
    }
+
+    #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
+    public function deleteUser(User $user, EntityManagerInterface $em): JsonResponse
+    {
+        $em->remove($user);
+        $em->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+   }
+
 }
