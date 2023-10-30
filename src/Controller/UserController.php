@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -34,6 +35,19 @@ class UserController extends AbstractController
         }
 
         throw new ErrorException("Vous ne pouvez pas accéder à cet utilisateur");
+   }
+
+    #[Route('/api/users', name: 'addUser', methods: ['POST'])]
+    public function addUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $user->setClient($this->getUser());
+        $em->persist($user);
+        $em->flush();
+
+        $jsonUser = $serializer->serialize($user, 'json');
+
+        return new JsonResponse($jsonUser, Response::HTTP_CREATED, ['accept' => 'json'], true);
    }
 
     #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
