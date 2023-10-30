@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Client;
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
@@ -39,7 +40,19 @@ class AppFixtures extends Fixture
              $manager->persist($client);
          }
 
-        // Create 20 sample products
+        //  Users
+        for ($i = 0; $i < 50; $i++) {
+            $user = new User();
+            $user->setFirstName($this->faker->firstName());
+            $user->setLastName($this->faker->lastName());
+            $user->setEmail($this->faker->email());
+            $user->setPhone($this->faker->phoneNumber());
+            $user->setAddress($this->faker->address());
+            $user->setClient($clients[mt_rand(0, count($clients) - 1)]);
+            $manager->persist($user);
+        }
+
+        // Products
         for ($i = 0; $i < 20; $i++) {
             $product = new Product;
             $product->setName(ucwords($this->faker->word()));

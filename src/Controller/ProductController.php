@@ -19,7 +19,7 @@ class ProductController extends AbstractController
         $productList = $productRepository->findAll();
         $jsonProductList = $serializer->serialize($productList, 'json');
 
-        return new JsonResponse($jsonProductList, Response::HTTP_OK, [], true);
+        return new JsonResponse($jsonProductList, Response::HTTP_OK, ['accept' => 'json'], true);
 
     }
 
