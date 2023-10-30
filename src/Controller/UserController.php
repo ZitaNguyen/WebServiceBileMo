@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +24,14 @@ class UserController extends AbstractController
 
     }
 
-//     #[Route('/api/products/{id}', name: 'product', methods: ['GET'])]
-//     public function getSingleProduct(Product $product, SerializerInterface $serializer): JsonResponse {
+    #[Route('/api/users/{id}', name: 'user', methods: ['GET'])]
+    public function getSingleProduct(User $user, SerializerInterface $serializer): JsonResponse
+    {
+        if ($user->getClient() == $this->getUser()) {
+            $jsonUser = $serializer->serialize($user, 'json');
+            return new JsonResponse($jsonUser, Response::HTTP_OK, ['accept' => 'json'], true);
+        }
 
-//         $jsonProduct = $serializer->serialize($product, 'json');
-//         return new JsonResponse($jsonProduct, Response::HTTP_OK, ['accept' => 'json'], true);
-//    }
+        throw new ErrorException("Vous ne pouvez pas accéder à cet utilisateur");
+   }
 }
