@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,12 +30,11 @@ class UserController extends AbstractController
     #[Route('/api/users/{id}', name: 'user', methods: ['GET'])]
     public function getSingleUser(User $user, SerializerInterface $serializer): JsonResponse
     {
-        if ($user->getClient() == $this->getUser()) {
-            $jsonUser = $serializer->serialize($user, 'json');
-            return new JsonResponse($jsonUser, Response::HTTP_OK, ['accept' => 'json'], true);
-        }
+         // check right to access
+         $this->denyAccessUnlessGranted(UserVoter::ACCESS, $user);
 
-        throw new ErrorException("Vous ne pouvez pas accéder à cet utilisateur");
+         $jsonUser = $serializer->serialize($user, 'json');
+         return new JsonResponse($jsonUser, Response::HTTP_OK, ['accept' => 'json'], true);
    }
 
     #[Route('/api/users', name: 'addUser', methods: ['POST'])]
@@ -53,6 +53,9 @@ class UserController extends AbstractController
     #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
     public function deleteUser(User $user, EntityManagerInterface $em): JsonResponse
     {
+        // check right to access
+        $this->denyAccessUnlessGranted(UserVoter::ACCESS, $user);
+
         $em->remove($user);
         $em->flush();
 
