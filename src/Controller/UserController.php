@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,9 +17,16 @@ use Symfony\Component\Serializer\SerializerInterface;
 class UserController extends AbstractController
 {
     #[Route('/api/users', name: 'users', methods: ['GET'])]
-    public function getUserList(UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
+    public function getUserList(
+        UserRepository $userRepository,
+        SerializerInterface $serializer,
+        Request $request
+    ): JsonResponse
     {
-        $userList = $userRepository->findBy(['client' => $this->getUser()]);
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 5);
+        $client = $this->getUser();
+        $userList = $userRepository->findAllWithPagination($page, $limit, $client);
         $jsonUserList = $serializer->serialize($userList, 'json');
 
         return new JsonResponse($jsonUserList, Response::HTTP_OK, ['accept' => 'json'], true);
