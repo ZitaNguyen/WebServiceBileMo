@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 class UserController extends AbstractController
@@ -20,14 +21,21 @@ class UserController extends AbstractController
     public function getUserList(
         UserRepository $userRepository,
         SerializerInterface $serializer,
-        Request $request
+        Request $request,
+        PaginatorInterface $paginator
     ): JsonResponse
     {
-        $page = $request->get('page', 1);
-        $limit = $request->get('limit', 5);
-        $client = $this->getUser();
-        $userList = $userRepository->findAllWithPagination($page, $limit, $client);
+        $userList = $userRepository->findBy(['client' => $this->getUser()]);
+        $userList = $paginator->paginate(
+            $userList, // Query data
+            $request->query->getInt('page', 1), // Page parameter
+            5 // Limit per page
+        );
+
         $jsonUserList = $serializer->serialize($userList, 'json');
+
+        if ($jsonUserList === "[]")
+            return new JsonResponse(['message' => 'Pas résultats sur cette page.'], Response::HTTP_OK);
 
         return new JsonResponse($jsonUserList, Response::HTTP_OK, ['accept' => 'json'], true);
 
