@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
@@ -15,15 +16,48 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/\d/',
+        match: false,
+        message: 'Votre prénom ne peut pas contenir de chiffre',
+    )]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Votre prénom devrait au moins {{ limit }} caractères',
+        maxMessage: 'Votre prénom ne devrait pas plus de {{ limit }} caractères',
+    )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/\d/',
+        match: false,
+        message: 'Votre nom ne peut pas contenir de chiffre',
+    )]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Votre nom devrait au moins {{ limit }} caractères',
+        maxMessage: 'Votre nom ne devrait pas plus de {{ limit }} caractères',
+    )]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        message: 'Email {{ value }} est invalid.',
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Regex(
+        pattern: '/^\(0\)[0-9]*$',
+        match: false,
+        message: 'Votre téléphone peut contenir que des chiffres',
+    )]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
