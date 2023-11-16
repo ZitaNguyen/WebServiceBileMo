@@ -32,10 +32,11 @@ class UserController extends AbstractController
         if (!$cachedData->isHit()) {
             // If cache miss, retrieve the data and store it in the cache
             $userList = $userRepository->findBy(['client' => $this->getUser()]);
+            $limit = $_GET['limit'] ?? 5;// Limit per page
             $userList = $paginator->paginate(
                 $userList, // Query data
                 $request->query->getInt('page', 1), // Page parameter
-                5 // Limit per page
+                $limit // Limit per page
             );
 
             $jsonUserList = $serializer->serialize($userList, 'json');
