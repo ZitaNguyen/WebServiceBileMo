@@ -20,6 +20,9 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 'message' => $exception->getMessage()
             ];
 
+            if (strpos($data['message'], 'object not found') !== false )
+                $data['message'] = 'Produit inexistant';
+
             $event->setResponse(new JsonResponse($data));
         } else {
                 $data = [
