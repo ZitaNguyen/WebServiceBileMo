@@ -23,10 +23,11 @@ class ProductController extends AbstractController
     ): JsonResponse
     {
         $productList = $productRepository->findAll();
+        $limit = $_GET['limit'] ?? 5;// Limit per page
         $productList = $paginator->paginate(
             $productList, // Query data
             $request->query->getInt('page', 1), // Page parameter
-            5 // Limit per page
+            $limit
         );
         $jsonProductList = $serializer->serialize($productList, 'json');
 
