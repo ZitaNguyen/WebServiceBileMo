@@ -6,10 +6,18 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+/**
+ * @Serializer\XmlRoot("user")
+ *
+ * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
+    /** @Serializer\XmlAttribute */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -63,6 +71,7 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
+     /** @Serializer\Exclude */
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     #[Ignore]
