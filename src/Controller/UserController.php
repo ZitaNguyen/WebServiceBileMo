@@ -21,7 +21,6 @@ class UserController extends AbstractController
     #[Route('/api/users', name: 'users', methods: ['GET'])]
     public function getUserList(
         UserRepository $userRepository,
-        SerializerInterface $serializer,
         Request $request,
         PaginatorInterface $paginator
     ): JsonResponse
@@ -34,7 +33,6 @@ class UserController extends AbstractController
             $limit // Limit per page
         );
 
-        // $jsonUserList = $serializer->serialize($userList, 'json');
         $hateoas = HateoasBuilder::create()->build();
         $jsonUserList = $hateoas->serialize($userList, 'json');
 
