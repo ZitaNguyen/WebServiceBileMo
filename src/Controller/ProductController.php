@@ -11,13 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Hateoas\HateoasBuilder;
 
 class ProductController extends AbstractController
 {
     #[Route('/api/products', name: 'products', methods: ['GET'])]
     public function getProductList(
         ProductRepository $productRepository,
-        SerializerInterface $serializer,
         Request $request,
         PaginatorInterface $paginator
     ): JsonResponse
@@ -29,9 +29,10 @@ class ProductController extends AbstractController
             $request->query->getInt('page', 1), // Page parameter
             $limit
         );
-        $jsonProductList = $serializer->serialize($productList, 'json');
+        $hateoas = HateoasBuilder::create()->build();
+        $jsonProductList = $hateoas->serialize($productList, 'json');
 
-        if ($jsonProductList === "[]")
+        if ($jsonProductList === '[]')
             return new JsonResponse(['message' => 'Pas résultats sur cette page.'], Response::HTTP_OK);
 
         return new JsonResponse($jsonProductList, Response::HTTP_OK, ['accept' => 'json'], true);
