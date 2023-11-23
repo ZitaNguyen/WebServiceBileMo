@@ -5,12 +5,13 @@ BileMo est une entreprise offrant toute une sélection de téléphones mobiles h
 
 Voici les principales fonctionnalités disponibles demandées par le client:
 
-  * consulter la liste des produits BileMo ;
-  * consulter les détails d’un produit BileMo ;
-  * consulter la liste des utilisateurs inscrits liés à un client sur le site web ;
-  * consulter le détail d’un utilisateur inscrit lié à un client ;
-  * ajouter un nouvel utilisateur lié à un client ;
-  * supprimer un utilisateur ajouté par un client.
+  * consulter la liste des produits BileMo
+  * consulter les détails d’un produit BileMo
+  * consulter la liste des utilisateurs inscrits liés à un client sur le site web
+  * consulter le détail d’un utilisateur inscrit lié à un client
+  * ajouter un nouvel utilisateur lié à un client
+  * supprimer un utilisateur ajouté par un client
+  * les réponses (productList, userList) sont mises en cache afin d’optimiser les performances des requêtes en direction de l’API
 
 ## Contraintes
 
@@ -71,55 +72,55 @@ Pour commencer avec ce projet PHP, suivez les étapes ci-dessous
 * Authentification:
 
     ```bash
-    TOKEN=$(curl -s -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data '{"username":"YourUsername" ,"password" : "YourPassword"}' http://localhost:8000/api/login_check | jq -r '.token')
+    TOKEN=$(curl -s -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data '{"username":"YourUsername" ,"password" : "YourPassword"}' https://127.0.0.1:8000/api/login_check | jq -r '.token')
     ```
 
 * Réupérer la liste des produits:
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/products
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products
     ```
 * Réupérer la liste des produits (par page avec une limitation si besoin):
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/products?page=1&limit=2
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products?page=1&limit=2
     ```
 * Réupérer un produit:
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/products/{productID}
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products/{productID}
     ```
 * Réupérer la liste des utilisateurs:
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/users
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users
     ```
 * Réupérer la liste des utilisateurs (par page avec une limitation si besoin):
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/users?page=1&limit=2
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users?page=1&limit=2
     ```
 * Réupérer un utilisateur:
 
     ```bash
-    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/users/{userID}
+    curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users/{userID}
     ```
 
 * Ajouter un utilisateur:
 
     ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"firstName":"Zita","lastName":"Van","email":"zita@test.fr","phone":"0123456789","address":"123 rue de test"}' -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/users
+    curl -X POST -H "Content-Type: application/json" -d '{"firstName":"Zita","lastName":"Van","email":"zita@test.fr","phone":"0123456789","address":"123 rue de test"}' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users
     ```
 
 * Supprimer un utilisateur:
 
     ```bash
-    curl -X DELETE -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/users/{userID}
+    curl -X DELETE -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users/{userID}
     ```
 
 ## Documentation Technique
 
- * http://localhost:8000/api/doc
+ * https://127.0.0.1:8000/api/doc
 
 ## Licence
 
