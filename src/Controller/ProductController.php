@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Hateoas\HateoasBuilder;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class ProductController extends AbstractController
 {
@@ -22,7 +24,12 @@ class ProductController extends AbstractController
         PaginatorInterface $paginator
     ): JsonResponse
     {
-        $productList = $productRepository->findAll();
+        $cache = new FilesystemAdapter();
+        $productList = $cache->get('product_list_cache_key', function (ItemInterface $item) use ($productRepository) {
+            $item->expiresAfter(3600); // Cache expires after 1 hour
+            return $productRepository->findAll();
+        });
+       
         $limit = $_GET['limit'] ?? 5;// Limit per page
         $productList = $paginator->paginate(
             $productList, // Query data

@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Hateoas\HateoasBuilder;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 
 class UserController extends AbstractController
@@ -25,7 +27,12 @@ class UserController extends AbstractController
         PaginatorInterface $paginator
     ): JsonResponse
     {
-        $userList = $userRepository->findBy(['client' => $this->getUser()]);
+        $cache = new FilesystemAdapter();
+        $userList = $cache->get('user_list_cache_key', function (ItemInterface $item) use ($userRepository) {
+            $item->expiresAfter(3600); // Cache expires after 1 hour
+            return $userRepository->findBy(['client' => $this->getUser()]);
+        });
+        
         $limit = $_GET['limit'] ?? 5;// Limit per page
         $userList = $paginator->paginate(
             $userList, // Query data
