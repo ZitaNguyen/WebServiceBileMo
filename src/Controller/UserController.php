@@ -36,7 +36,7 @@ class UserController extends AbstractController
             return $userRepository->findBy(['client' => $this->getUser()]);
         });
 
-        $limit = $_GET['limit'] ?? 5;// Limit per page
+        $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT) ?? 5;// Limit per page
         $userList = $paginator->paginate(
             $userList, // Query data
             $request->query->getInt('page', 1), // Page parameter
