@@ -32,7 +32,7 @@ class UserController extends AbstractController
             $item->expiresAfter(3600); // Cache expires after 1 hour
             return $userRepository->findBy(['client' => $this->getUser()]);
         });
-        
+
         $limit = $_GET['limit'] ?? 5;// Limit per page
         $userList = $paginator->paginate(
             $userList, // Query data
@@ -59,15 +59,59 @@ class UserController extends AbstractController
     #[Route('/api/users', name: 'addUser', methods: ['POST'])]
     public function addUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
     {
-        $user = $serializer->deserialize($request->getContent(), User::class, 'json');
-        $user->setClient($this->getUser());
-        $em->persist($user);
-        $em->flush();
+        try {
+            $user = $serializer->deserialize($request->getContent(), User::class, 'json');
 
-        $jsonUser = $serializer->serialize($user, 'json');
+            $user->setClient($this->getUser());
+            $em->persist($user);
+            $em->flush();
 
-        return new JsonResponse($jsonUser, Response::HTTP_CREATED, ['accept' => 'json'], true);
+            $jsonUser = $serializer->serialize($user, 'json');
+
+            return new JsonResponse($jsonUser, Response::HTTP_CREATED, ['accept' => 'json'], true);
+        } catch (\Exception $e) {
+            // Handle exceptions, log errors, and return an appropriate error response
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
    }
+
+    #[Route('/api/users/{id}', name: 'editUser', methods: ['PUT'])]
+    public function editUser(User $user, Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
+    {
+        try {
+            // check right to access
+            $this->denyAccessUnlessGranted(UserVoter::ACCESS, $user);
+
+            $newUser = $serializer->deserialize($request->getContent(), User::class, 'json');
+
+            if ($newUser->getFirstName() !== null)
+                $user->setFirstName($newUser->getFirstName());
+
+            if ($newUser->getLastName() !== null)
+                $user->setLastName($newUser->getLastName());
+
+            if ($newUser->getEmail() !== null)
+                $user->setEmail($newUser->getEmail());
+
+            if ($newUser->getPhone() !== null)
+                $user->setPhone($newUser->getPhone());
+
+            if ($newUser->getAddress() !== null)
+                $user->setAddress($newUser->getAddress());
+            
+
+            // $user->setClient($this->getUser());
+            $em->persist($user);
+            $em->flush();
+
+            $jsonUser = $serializer->serialize($user, 'json');
+
+            return new JsonResponse($jsonUser, Response::HTTP_CREATED, ['accept' => 'json'], true);
+        } catch (\Exception $e) {
+            // Handle exceptions, log errors, and return an appropriate error response
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
 
     #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
     public function deleteUser(User $user, EntityManagerInterface $em): JsonResponse
