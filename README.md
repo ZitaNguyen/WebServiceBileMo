@@ -10,6 +10,7 @@ Voici les principales fonctionnalités disponibles demandées par le client:
   * consulter la liste des utilisateurs inscrits liés à un client sur le site web
   * consulter le détail d’un utilisateur inscrit lié à un client
   * ajouter un nouvel utilisateur lié à un client
+  * modifier un utilisateur lié à un client
   * supprimer un utilisateur ajouté par un client
   * les réponses (productList, userList) sont mises en cache afin d’optimiser les performances des requêtes en direction de l’API
 
@@ -28,41 +29,58 @@ Php ainsi que Composer doivent être installés sur votre ordinateur afin de pou
 ## Installation
 Pour commencer avec ce projet PHP, suivez les étapes ci-dessous
 1. Clonez le dépôt
+
    ```bash
    git clone hhttps://github.com/ZitaNguyen/WebServiceBileMo.git
    ```
+
 2. Accédez au répertoire du projet
+
    ```bash
    cd <nom du répertoire>
    ```
+
 3. Installez les dépendances requises pour le projet
+
    ```bash
    composer install
    ```
+
 4. Configurez de la base de données
 - Installez MAMP ou XAMPP si besoin
 - Modifiez les valeurs dans le fichier `.env.local` pour les adapter à votre configuratione locale.
+
    ```bash
    DATABASE_URL="mysql://USER:PASSWORD@127.0.0.1:8889/SnowTricks?serverVersion=5.7.40"
    ```
-5. Exécuter la création de la base de donnée avec la commande:
+
+5. Exécuter la création de la base de donnée avec la commande
+
    ```bash
    symfony console doctrine:database:create
    ```
-6. Exécuter la migration en base de donnée:
+
+6. Exécuter la migration en base de donnée
+
    ```bash
    symfony console doctrine:migration:migrate
    ```
-7. Exécuter les dataFixtures avec la commande:
+
+7. Exécuter les dataFixtures avec la commande
+
    ```bash
    php bin/console doctrine:fixtures:load
    ```
-8. Générez des clés d'authentification JWT avec des commandes:
+
+8. Générez des clés d'authentification JWT avec des commandes
+
     ```bash
     $ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
     $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
     ```
+
 9.  Démarrez le serveur de développement
+    
     ```bash
     symfony server:start
     ```
@@ -80,26 +98,31 @@ Pour commencer avec ce projet PHP, suivez les étapes ci-dessous
     ```bash
     curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products
     ```
+
 * Réupérer la liste des produits (par page avec une limitation si besoin):
 
     ```bash
     curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products?page=1&limit=2
     ```
+
 * Réupérer un produit:
 
     ```bash
     curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/products/{productID}
     ```
+
 * Réupérer la liste des utilisateurs:
 
     ```bash
     curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users
     ```
+
 * Réupérer la liste des utilisateurs (par page avec une limitation si besoin):
 
     ```bash
     curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users?page=1&limit=2
     ```
+
 * Réupérer un utilisateur:
 
     ```bash
@@ -110,6 +133,12 @@ Pour commencer avec ce projet PHP, suivez les étapes ci-dessous
 
     ```bash
     curl -X POST -H "Content-Type: application/json" -d '{"firstName":"Zita","lastName":"Van","email":"zita@test.fr","phone":"0123456789","address":"123 rue de test"}' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users
+    ```
+
+* Modifier un utilisateur:
+
+    ```bash
+    curl -X PUT -H "Content-Type: application/json" -d '{"lastName":"Nguyen"}' -H "Authorization: Bearer $TOKEN" https://127.0.0.1:8000/api/users
     ```
 
 * Supprimer un utilisateur:

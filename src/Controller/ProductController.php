@@ -17,6 +17,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class ProductController extends AbstractController
 {
+    /**
+     * Function to get a list of products
+     */
     #[Route('/api/products', name: 'products', methods: ['GET'])]
     public function getProductList(
         ProductRepository $productRepository,
@@ -29,7 +32,7 @@ class ProductController extends AbstractController
             $item->expiresAfter(3600); // Cache expires after 1 hour
             return $productRepository->findAll();
         });
-       
+
         $limit = $_GET['limit'] ?? 5;// Limit per page
         $productList = $paginator->paginate(
             $productList, // Query data
@@ -46,6 +49,9 @@ class ProductController extends AbstractController
 
     }
 
+    /**
+     * Function to get a product by id
+     */
     #[Route('/api/products/{id}', name: 'product', methods: ['GET'])]
     public function getSingleProduct(Product $product, SerializerInterface $serializer): JsonResponse
     {
