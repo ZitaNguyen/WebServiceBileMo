@@ -33,7 +33,7 @@ class ProductController extends AbstractController
             return $productRepository->findAll();
         });
 
-        $limit = $_GET['limit'] ?? 5;// Limit per page
+        $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT) ?? 5;// Limit per page
         $productList = $paginator->paginate(
             $productList, // Query data
             $request->query->getInt('page', 1), // Page parameter
