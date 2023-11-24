@@ -21,7 +21,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
             ];
 
             if (strpos($data['message'], 'object not found') !== false )
-                $data['message'] = 'Produit inexistant';
+                $data['message'] = 'Aucun enregistrement trouvé';
 
             $event->setResponse(new JsonResponse($data));
         } else {
