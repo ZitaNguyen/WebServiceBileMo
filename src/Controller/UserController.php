@@ -20,6 +20,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class UserController extends AbstractController
 {
+    /**
+     * Function to get a list of users which are registered by the client logged in
+     */
     #[Route('/api/users', name: 'users', methods: ['GET'])]
     public function getUserList(
         UserRepository $userRepository,
@@ -46,6 +49,9 @@ class UserController extends AbstractController
         return new JsonResponse($jsonUserList, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
+    /**
+     * Function to get a user by id
+     */
     #[Route('/api/users/{id}', name: 'user', methods: ['GET'])]
     public function getSingleUser(User $user, SerializerInterface $serializer): JsonResponse
     {
@@ -54,8 +60,11 @@ class UserController extends AbstractController
 
          $jsonUser = $serializer->serialize($user, 'json');
          return new JsonResponse($jsonUser, Response::HTTP_OK, ['accept' => 'json'], true);
-   }
+    }
 
+    /**
+     * Function to add a new user
+     */
     #[Route('/api/users', name: 'addUser', methods: ['POST'])]
     public function addUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
     {
@@ -73,8 +82,11 @@ class UserController extends AbstractController
             // Handle exceptions, log errors, and return an appropriate error response
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-   }
+    }
 
+    /**
+     * Function to edit a user by id
+     */
     #[Route('/api/users/{id}', name: 'editUser', methods: ['PUT'])]
     public function editUser(User $user, Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
     {
@@ -98,7 +110,7 @@ class UserController extends AbstractController
 
             if ($newUser->getAddress() !== null)
                 $user->setAddress($newUser->getAddress());
-            
+
 
             // $user->setClient($this->getUser());
             $em->persist($user);
@@ -113,6 +125,9 @@ class UserController extends AbstractController
         }
     }
 
+    /**
+     * Function to delete a user by id
+     */
     #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
     public function deleteUser(User $user, EntityManagerInterface $em): JsonResponse
     {
@@ -123,6 +138,6 @@ class UserController extends AbstractController
         $em->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-   }
+    }
 
 }
