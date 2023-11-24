@@ -2,7 +2,7 @@ nelmio_api_doc:
     documentation:
         info:
             title: BileMo
-            description: This is an awesome app!
+            description: Catalogue du BileMo via une API
             version: 1.0.0
         paths:
             /api/login_check:
