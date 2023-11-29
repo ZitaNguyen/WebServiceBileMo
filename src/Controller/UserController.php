@@ -16,6 +16,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Hateoas\HateoasBuilder;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use OpenApi\Annotations as OA;
 
 
 class UserController extends AbstractController
@@ -64,6 +65,27 @@ class UserController extends AbstractController
 
     /**
      * Function to add a new user
+     *
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         example={
+     *              "firstName": "Toto",
+     *              "lastName": "Tester",
+     *              "email": "test@email.fr",
+     *              "phone": "0623456789",
+     *              "address": "123 rue de Test"
+     *          },
+     *          @OA\Schema (
+     *              type="object",
+     *              @OA\Property(property="firstName", required=true, description="Votre prénom", type="string"),
+     *              @OA\Property(property="lastName", required=true, description="Votre nom", type="string"),
+     *              @OA\Property(property="email", required=true, description="Votre email", type="string"),
+     *              @OA\Property(property="phone", required=true, description="Votre téléphone", type="string"),
+     *              @OA\Property(property="address", required=true, description="Votre address", type="string"),
+     *          )
+     *      )
+     * )
      */
     #[Route('/api/users', name: 'addUser', methods: ['POST'])]
     public function addUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
@@ -86,6 +108,27 @@ class UserController extends AbstractController
 
     /**
      * Function to edit a user by id
+     *
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         example={
+     *              "firstName": "Toto",
+     *              "lastName": "Tester",
+     *              "email": "test@email.fr",
+     *              "phone": "0623456789",
+     *              "address": "123 rue de Test"
+     *          },
+     *          @OA\Schema (
+     *              type="object",
+     *              @OA\Property(property="firstName", required=true, description="Votre prénom", type="string"),
+     *              @OA\Property(property="lastName", required=true, description="Votre nom", type="string"),
+     *              @OA\Property(property="email", required=true, description="Votre email", type="string"),
+     *              @OA\Property(property="phone", required=true, description="Votre téléphone", type="string"),
+     *              @OA\Property(property="address", required=true, description="Votre address", type="string"),
+     *          )
+     *      )
+     * )
      */
     #[Route('/api/users/{id}', name: 'editUser', methods: ['PUT'])]
     public function editUser(User $user, Request $request, SerializerInterface $serializer, EntityManagerInterface $em): JsonResponse
